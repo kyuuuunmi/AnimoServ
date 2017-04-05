@@ -2,7 +2,7 @@ const express = require('express');
 const router = express.Router();
 
 router.get('/', function(req, res){
-  res.send('welcome!');
+  res.send('Welcome to Animo World!');
 });
 
 
