@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+
+<html lang="ko">
+
+<head>
+    <meta charset="utf-8">
+
+    <title>Welcome</title>
+
+    <script>
+        function onload() {
+            DisplayPicture();
+        }
+
+        function DisplayPicture() {
+            var ctrl = document.getElementById('e_id');
+            var tmp = parseInt(ctrl.value) + 1;
+            if (tmp > 3)
+                tmp = 1;
+
+            ctrl.value = tmp;
+
+            var picture_path;
+
+            switch (tmp) {
+                case 1:
+                    picture_path = '/Users/yuuuunmi/img/1.png';
+                    break;
+                case 2:
+                    picture_path = '/Users/yuuuunmi/img/2.png';
+                    break;
+                case 3:
+                    picture_path = '/Users/yuuuunmi/img/3.png';
+                    break;
+            }
+
+            var ctrl_picture = document.getElementById('picture');
+            ctrl_picture.innerHTML = picture_path;
+            setTimeout('DisplayPicture()', 1 * 1000);
+        }
+    </script>
+</head>
+
+<body leftmargin=0 topmargin=0 onload="onload()" style="overflow:hidden; background-color: # 000000;">
+    <input type=hidden id="e_id" name="e_id" value="0"></input>
+    <center>
+        <div id="picture" name="picture"><img src="/Users/yuuuunmi/img/0.png"></div>
+    </center>
+</body>
+
+</html>
