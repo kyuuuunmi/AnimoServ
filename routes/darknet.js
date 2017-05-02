@@ -9,11 +9,20 @@ var exec = require('child_process').exec, child;
 
 router.get('/', function(req, res){
 
-  // 1) 맨 마지막 raw image를 불러온다 & 명령행 인자 선언
-  var raw_image = getMostRecentFileName('/home/ubuntu/CNN/raw_image');
-  var arg_darknet = "/home/ubuntu/CNN/Animo_darknet/Animo_Darknet/Animo_Darknet/darknet detector test cfg/voc.data cfg/tiny-yolo-voc.cfg tiny-yolo-voc.weights " + raw_image;
-  var arg_mv = "mv /home/ubuntu/CNN/Animo_darknet/Animo_Darknet/Animo_Darknet/predictions.png /home/ubuntu/CNN/dt_image/"+ Date.now() + ".png";
+  var darknet_home ="/home/ubuntu/CNN/Animo_darknet/Animo_Darknet/Animo_Darknet";
 
+  // 1) 맨 마지막 raw image를 불러온다 & 명령행 인자 선언
+//  var raw_image = getMostRecentFileName('/home/ubuntu/CNN/raw_image');
+  var arg_darknet = darknet_home + "/darknet detector test "+
+                    darknet_home + "/cfg/voc.data " +
+                    darknet_home + "/cfg/tiny-yolo-voc.cfg " +
+                    //darknet_home + "/tiny-yolo-voc.weights " + raw_image;
+                    darknet_home + "/tiny-yolo-voc.weights ";
+  var arg_mv = "mv "+ darknet_home + "/predictions.png /home/ubuntu/CNN/dt_image/"+ Date.now() + ".png";
+
+  res.send(arg_darknet +'\n' + arg_mv);
+
+/*
   async.series([
 
     // 2) 다크넷에 파일 인자를 넣어 실행.
@@ -42,7 +51,7 @@ router.get('/', function(req, res){
         console.log(err);
       else
         res.send("successed");
-  });
+  });*/
 });
 function getMostRecentFileName(dir) {
     var files = fs.readdirSync(dir);
