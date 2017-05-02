@@ -13,17 +13,29 @@ router.get('/', function(req, res){
 
   // 1) 맨 마지막 raw image를 불러온다 & 명령행 인자 선언
   var raw_image = getMostRecentFileName('/home/ubuntu/CNN/raw_image');
-  var arg_darknet = darknet_home + "/darknet detector test "+
+  /*var arg_darknet = darknet_home + "/darknet detector test "+
                     darknet_home + "/cfg/voc.data " +
                     darknet_home + "/cfg/tiny-yolo-voc.cfg " +
                     darknet_home + "/tiny-yolo-voc.weights " + raw_image;
-                    //darknet_home + "/tiny-yolo-voc.weights ";
-  var arg_mv = "mv "+ darknet_home + "/predictions.png /home/ubuntu/CNN/dt_image/"+ Date.now() + ".png";
+*/
+  var arg_darknet = "./darknet detector test /cfg/voc.data cfg/tiny-yolo-voc.cfg tiny-yolo-voc.weights " + raw_image;
 
-  res.send(arg_darknet +'\n' + arg_mv);
+
+  var arg_mv = "mv "+ darknet_home + "/predictions.png /home/ubuntu/CNN/dt_image/"+ Date.now() + ".png";
 
 
   async.series([
+    function(callback){
+      var arg_cd = "cd "+darknet_home;
+
+      child = exec(cd, function (error, stdout, stderr) {
+          console.log('stdout: ' + stdout);
+          console.log('stderr: ' + stderr);
+          if (error !== null) {
+              console.log('exec error: ' + error);
+          }
+      });
+    },
 
     // 2) 다크넷에 파일 인자를 넣어 실행.
     function(callback){
