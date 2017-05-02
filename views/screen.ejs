@@ -6,8 +6,20 @@
     <meta charset="utf-8">
 
     <title>Welcome</title>
-
+    <script src ="http://code.jquery.com/jquery-1.7.0.min.js"></script>
     <script>
+        $(function(){
+          $("#picture body").each(function(){
+            var oImgWidth = $(this).width();
+            var oImgHeight = $(this).height();
+            $(this).css({
+              'max-width':oImgWidth+'px',
+              'max-height':oImgHeight+'px',
+              'width': '50%',
+              'height':'50%'
+            });
+          });
+        });
         function onload() {
             DisplayPicture();
         }
@@ -27,7 +39,7 @@
                     picture_path = '<img src="/0.png">';
                     break;
                 case 2:
-                    picture_path = '<img src="/1.png">';
+                    picture_path = '<img src="/1.png">'; // style="max-width:50%; height:auto;"
                     break;
                 case 3:
                     picture_path = '<img src="/5.png">';
@@ -39,12 +51,12 @@
 
             var ctrl_picture = document.getElementById('picture');
             ctrl_picture.innerHTML = picture_path;
-            setTimeout('DisplayPicture()', 3 * 1000);
+            setTimeout('DisplayPicture()', 1 * 1000);
         }
     </script>
 </head>
 
-<body leftmargin=0 topmargin=0 onload="onload()" style="overflow:hidden; background-color: # 000000;">
+<body leftmargin=0 topmargin=0 onload="onload()" style="background-color: #000000;">
     <input type=hidden id="e_id" name="e_id" value="0"></input>
     <center>
         <div id="picture" name="picture"><img src="/0.png"></div>
