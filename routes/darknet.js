@@ -28,7 +28,7 @@ router.get('/', function(req, res){
     function(callback){
       var arg_cd = "cd "+darknet_home;
 
-      child = exec(cd, function (error, stdout, stderr) {
+      child = exec(arg_cd, function (error, stdout, stderr) {
           console.log('stdout: ' + stdout);
           console.log('stderr: ' + stderr);
           if (error !== null) {
