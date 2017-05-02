@@ -11,7 +11,7 @@ router.get('/', function(req, res){
 
   // 1) 맨 마지막 raw image를 불러온다 & 명령행 인자 선언
   var raw_image = getMostRecentFileName('/home/ubuntu/CNN/raw_image');
-  var arg_darknet = "../../CNN/Animo_darknet/Animo_Darknet/Animo_Darknet/darknet detector test cfg/voc.data cfg/tiny-yolo-voc.cfg tiny-yolo-voc.weights " + raw_image;
+  var arg_darknet = "/home/ubuntu/CNN/Animo_darknet/Animo_Darknet/Animo_Darknet/darknet detector test cfg/voc.data cfg/tiny-yolo-voc.cfg tiny-yolo-voc.weights " + raw_image;
   var arg_mv = "mv /home/ubuntu/CNN/Animo_darknet/Animo_Darknet/Animo_Darknet/predictions.png /home/ubuntu/CNN/dt_image/"+ Date.now() + ".png";
 
   async.series([
