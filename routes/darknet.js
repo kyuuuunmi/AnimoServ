@@ -17,7 +17,7 @@ router.get('/', function(req, res) {
                     darknet_home + "/cfg/tiny-yolo-voc.cfg " +
                     darknet_home + "/tiny-yolo-voc.weights " + raw_image;
 */
-    var arg_darknet = "./darknet detector test /cfg/voc.data cfg/tiny-yolo-voc.cfg tiny-yolo-voc.weights " + raw_image;
+    var arg_darknet = "./darknet detector test cfg/voc.data cfg/tiny-yolo-voc.cfg tiny-yolo-voc.weights " + raw_image;
 
 
     var arg_mv = "mv " + darknet_home + "/predictions.png /home/ubuntu/CNN/dt_image/" + Date.now() + ".png";
