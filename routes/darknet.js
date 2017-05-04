@@ -9,10 +9,8 @@ const darknet_home = "/home/ubuntu/CNN/Animo_darknet/Animo_Darknet/Animo_Darknet
 
 
 router.get('/', function(req, res) {
-
-
     // 1) 맨 마지막 raw image를 불러온다 & 명령행 인자 선언
-    var raw_image = getMostRecentFileName('/home/ubuntu/CNN/raw_image');
+    var raw_image = getMostRecentFileName('/home/ubuntu/CNN/motion');
     /*var arg_darknet = darknet_home + "/darknet detector test "+
                     darknet_home + "/cfg/voc.data " +
                     darknet_home + "/cfg/tiny-yolo-voc.cfg " +
