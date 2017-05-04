@@ -12,11 +12,7 @@ const darknet_home = "/home/ubuntu/CNN/Animo_darknet/Animo_Darknet/Animo_Darknet
 router.get('/', function(req, res) {
     // 1) 맨 마지막 raw image를 불러온다 & 명령행 인자 선언
     var raw_image = getMostRecentFileName('/home/ubuntu/CNN/motion');
-    /*var arg_darknet = darknet_home + "/darknet detector test "+
-                    darknet_home + "/cfg/voc.data " +
-                    darknet_home + "/cfg/tiny-yolo-voc.cfg " +
-                    darknet_home + "/tiny-yolo-voc.weights " + raw_image;
-*/
+
     var arg_darknet = "./darknet detector test cfg/voc.data cfg/tiny-yolo-voc.cfg tiny-yolo-voc.weights " + raw_image;
     var arg_mv = "mv " + darknet_home + "/predictions.png /home/ubuntu/CNN/dt_image/" + Date.now() + ".png";
 
@@ -37,6 +33,8 @@ router.get('/', function(req, res) {
                     callback(null, '200 darknet');
 
                 });
+              //  console.log('darknet!');
+              //  callback(null, '200 darknet');
             },
             // 3) output은 해당 경로로 이동시켜 준다.
             function(callback) {
@@ -54,6 +52,8 @@ router.get('/', function(req, res) {
                     console.log('stderr: ' + stderr);
                     callback(null, 'successed');
                 });
+                //console.log('mv!');
+                //callback(null, '200 darknet');
             }
         ], function(err, result) {
             if (err)
@@ -61,7 +61,7 @@ router.get('/', function(req, res) {
             //else
             //res.send("successed");
         });
-        sleep.sleep(3);
+        sleep.sleep(5);
     }
 });
 
