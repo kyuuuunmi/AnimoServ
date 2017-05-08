@@ -35,7 +35,8 @@ function execCNN(req, res, callback){
                   cwd: darknet_home
               }, function(error, stdout, stderr) {
                   if (error) {
-                      console.log('exec error: ' + error);
+                      console.log('exec error: ');
+		      console.log(error);
                       callback('darknet err');
                   }
                   console.log('stdout: ' + stdout);
@@ -44,7 +45,7 @@ function execCNN(req, res, callback){
 
               });
              console.log('darknet!');
-            //  callback(null, '200 darknet');
+             callback(null, '200 darknet');
           },
           // 3) output은 해당 경로로 이동시켜 준다.
           function(callback) {
@@ -62,8 +63,8 @@ function execCNN(req, res, callback){
                   console.log('stderr: ' + stderr);
                   callback(null, 'successed');
               });
-              //console.log('mv!');
-              //callback(null, '200 darknet');
+              console.log('mv!');
+              callback(null, '200 darknet');
           }
       ], function(err, result) {
           if (err)
