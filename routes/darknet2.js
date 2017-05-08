@@ -12,7 +12,7 @@ router.get('/', function(req, res) {
     res.send("received");
     var count = 0;
     async.whilst(function (){ return count < 5; },
-        execCNN(req,res,count,cb),
+        execCNN(req,res,count,callback),
         function (err) {
           if(err)
           console.log("[whilst err]");
@@ -21,7 +21,7 @@ router.get('/', function(req, res) {
     );
 });
 
-function execCNN(req, res, count,cb) {
+function execCNN(req, res, count,callback) {
     count++;
     // 1) 맨 마지막 raw image를 불러온다 & 명령행 인자 선언
     var raw_image = getMostRecentFileName('/home/ubuntu/CNN/motion');
@@ -30,32 +30,32 @@ function execCNN(req, res, count,cb) {
 
     async.series([
         // 2) 다크넷에 파일 인자를 넣어 실행.
-        function(callback) {
+        function(cb) {
             child = exec(arg_darknet,{cwd: darknet_home}, function(error, stdout, stderr) {
                 if (error) {
                     console.log('exec error: ')
                     console.log(error);
-                    callback('darknet err');
+                    cb('darknet err');
                 }
                 console.log('stdout: ' + stdout);
                 console.log('stderr: ' + stderr);
-                callback(null, '200 darknet');
+                cb(null, '200 darknet');
 
             });
             console.log('darknet!');
             //  callback(null, '200 darknet');
         },
         // 3) output은 해당 경로로 이동시켜 준다.
-        function(callback) {
+        function(cb) {
             console.log("mv : "+arg_mv);
             child = exec(arg_mv, {cwd: darknet_home}, function(error, stdout, stderr) {
                 if (error) {
                     console.log('exec error: ' + error);
-                    callback('mv err');
+                    cb('mv err');
                 }
                 console.log('stdout: ' + stdout);
                 console.log('stderr: ' + stderr);
-                callback(null, 'successed');
+                cb(null, 'successed');
             });
             //callback(null, '200 darknet');
         }
@@ -67,7 +67,7 @@ function execCNN(req, res, count,cb) {
         //res.send("successed");
     });
     setTimeout(callback, 1000);
-    cb();
+    callback();
 }
 
 
