@@ -20,59 +20,66 @@ router.get('/', function(req, res) {
 });
 
 
-function execCNN(req, res, callback) {
-    // 1) 맨 마지막 raw image를 불러온다 & 명령행 인자 선언
-    var raw_image = getMostRecentFileName('/home/ubuntu/CNN/motion');
-    var arg_darknet = "./darknet detector test cfg/voc.data cfg/tiny-yolo-voc.cfg tiny-yolo-voc.weights " + raw_image;
-    var arg_mv = "mv " + darknet_home + "/predictions.png /home/ubuntu/CNN/dt_image/" + Date.now() + ".png";
+
+function execCNN(req, res, callback){
+  // 1) 맨 마지막 raw image를 불러온다 & 명령행 인자 선언
+  var raw_image = getMostRecentFileName('/home/ubuntu/CNN/motion');
+  var arg_darknet = "./darknet detector test cfg/voc.data cfg/tiny-yolo-voc.cfg tiny-yolo-voc.weights " + raw_image;
+  var arg_mv = "mv " + darknet_home + "/predictions.png /home/ubuntu/CNN/dt_image/" + Date.now() + ".png";
 
 
+//  while (1) {
+      async.series([
+          // 2) 다크넷에 파일 인자를 넣어 실행.
+          function(callback) {
+	     console.log("series1")
+              child = exec(arg_darknet, {
+                  cwd: darknet_home
+              }, function(error, stdout, stderr) {
+                  if (error) {
+                      console.log('exec error: ');
+		      console.log(error);
+                      callback('darknet err');
+                  }
+                  console.log('stdout: ' + stdout);
+                  console.log('stderr: ' + stderr);
+                  callback(null, '200 darknet');
 
-    async.series([
-        // 2) 다크넷에 파일 인자를 넣어 실행.
-        function(callback) {
-            child = exec(arg_darknet, {
-                cwd: darknet_home
-            }, function(error, stdout, stderr) {
-                if (error !== null) {
-                    console.log('exec error: ' + error);
-                    allback('darknet err');
-                }
-                console.log('stdout: ' + stdout);
-                console.log('stderr: ' + stderr);
-                callback(null, '200 darknet');
+              });
+             console.log('darknet!');
+             //callback(null, '200 darknet');
+          },
+          // 3) output은 해당 경로로 이동시켜 준다.
+          function(callback) {
 
-            });
-            //  console.log('darknet!');
-            //  callback(null, '200 darknet');
-        },
-        // 3) output은 해당 경로로 이동시켜 준다.
-        function(callback) {
+              console.log("series2"+arg_mv);
+              child = exec(arg_mv, {
+                  cwd: darknet_home
+              }, function(error, stdout, stderr) {
+                  //child = exec(arg_test, function(error, stdout, stderr) {
+                  if (error) {
+                      console.log('exec error: ' + error);
+                      callback('mv err');
+                  }
+                  console.log('stdout: ' + stdout);
+                  console.log('stderr: ' + stderr);
+                  callback(null, 'successed');
+              });
+              console.log('mv!');
+              //callback(null, '200 darknet');
+          }
+      ], function(err, result) {
+          if (err)
+              console.log(err);
+          else
+	     console.log("good");
+          //res.send("successed");
+      });
+      sleep.sleep(5);
+      callback();
+  //    setTimeout();
+//    
 
-            //console.log(arg_mv);
-            child = exec(arg_mv, {
-                cwd: darknet_home
-            }, function(error, stdout, stderr) {
-                //child = exec(arg_test, function(error, stdout, stderr) {
-                if (error !== null) {
-                    console.log('exec error: ' + error);
-                    callback('mv err');
-                }
-                console.log('stdout: ' + stdout);
-                console.log('stderr: ' + stderr);
-                callback(null, 'successed');
-            });
-            //console.log('mv!');
-            //callback(null, '200 darknet');
-        }
-    ], function(err, result) {
-        if (err)
-            console.log(err);
-        //else
-        //res.send("successed");
-    });
-    sleep.sleep(5);
-    callback();
 }
 
 
