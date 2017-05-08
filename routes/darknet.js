@@ -8,15 +8,17 @@ const sleep = require('sleep');
 const exec = require('child_process').exec;
 const darknet_home = "/home/ubuntu/CNN/Animo_darknet/Animo_Darknet/Animo_Darknet";
 
-router.get('/',function(req,res){
-  res.send("received");
-  asyncLoop(10,function(loop){
-    execCNN(req,res,function(result){
-      console.log(loop.iteration());
-      loop.next();
+router.get('/', function(req, res) {
+    res.send("received");
+    asyncLoop(10, function(loop) {
+      res.redirect
+        execCNN(req, res, function(result) {
+            console.log(loop.iteration());
+            loop.next();
+        });
     });
-  });
 });
+
 
 
 function execCNN(req, res, callback){
@@ -45,7 +47,7 @@ function execCNN(req, res, callback){
 
               });
              console.log('darknet!');
-             callback(null, '200 darknet');
+             //callback(null, '200 darknet');
           },
           // 3) output은 해당 경로로 이동시켜 준다.
           function(callback) {
@@ -64,18 +66,19 @@ function execCNN(req, res, callback){
                   callback(null, 'successed');
               });
               console.log('mv!');
-              callback(null, '200 darknet');
+              //callback(null, '200 darknet');
           }
       ], function(err, result) {
           if (err)
               console.log(err);
-          //else
+          else
+	     console.log("good");
           //res.send("successed");
       });
       sleep.sleep(5);
       callback();
   //    setTimeout();
-//    }
+//    
 
 }
 
@@ -86,11 +89,9 @@ function getMostRecentFileName(dir) {
 
     // use underscore for max
     // 가장 최근에 변경된 파일을 리턴해줌
-   // console.log(dir);
-   console.log("getMostRecentFileName:files.length="+files.length);
     return path.join(dir, _.max(files, function(f) {
         var fullpath = path.join(dir, f); // 경로+파일 이름
-	// console.log(fullpath);
+
         // ctime = creation time is used
         // replace with mtime for modification time
         return fs.statSync(fullpath).ctime;
@@ -109,9 +110,8 @@ function asyncLoop(iterations, func, callback) {
             if (index < iterations) {
                 index++;
                 func(loop);
-            }
-             else {
-              // found smth ..
+            } else {
+                // found smth ..
                 done = true;
                 callback();
             }
