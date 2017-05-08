@@ -8,62 +8,76 @@ const sleep = require('sleep');
 const exec = require('child_process').exec;
 const darknet_home = "/home/ubuntu/CNN/Animo_darknet/Animo_Darknet/Animo_Darknet";
 
-
-router.get('/', function(req, res) {
-    // 1) 맨 마지막 raw image를 불러온다 & 명령행 인자 선언
-    var raw_image = getMostRecentFileName('/home/ubuntu/CNN/motion');
-
-    var arg_darknet = "./darknet detector test cfg/voc.data cfg/tiny-yolo-voc.cfg tiny-yolo-voc.weights " + raw_image;
-    var arg_mv = "mv " + darknet_home + "/predictions.png /home/ubuntu/CNN/dt_image/" + Date.now() + ".png";
-
-    res.send("received");
-    while (1) {
-        async.series([
-            // 2) 다크넷에 파일 인자를 넣어 실행.
-            function(callback) {
-                child = exec(arg_darknet, {
-                    cwd: darknet_home
-                }, function(error, stdout, stderr) {
-                    if (error !== null) {
-                        console.log('exec error: ' + error);
-                        allback('darknet err');
-                    }
-                    console.log('stdout: ' + stdout);
-                    console.log('stderr: ' + stderr);
-                    callback(null, '200 darknet');
-
-                });
-              //  console.log('darknet!');
-              //  callback(null, '200 darknet');
-            },
-            // 3) output은 해당 경로로 이동시켜 준다.
-            function(callback) {
-
-                console.log(arg_mv);
-                child = exec(arg_mv, {
-                    cwd: darknet_home
-                }, function(error, stdout, stderr) {
-                    //child = exec(arg_test, function(error, stdout, stderr) {
-                    if (error !== null) {
-                        console.log('exec error: ' + error);
-                        callback('mv err');
-                    }
-                    console.log('stdout: ' + stdout);
-                    console.log('stderr: ' + stderr);
-                    callback(null, 'successed');
-                });
-                //console.log('mv!');
-                //callback(null, '200 darknet');
-            }
-        ], function(err, result) {
-            if (err)
-                console.log(err);
-            //else
-            //res.send("successed");
-        });
-        sleep.sleep(5);
-    }
+router.get('/',function(req,res){
+  res.send("received");
+  asyncLoop(10,function(loop){
+    execCNN(req,res,function(result){
+      console.log(loop.iteration());
+      loop.next();
+    });
+  });
 });
+
+
+function execCNN(req, res, callback){
+  // 1) 맨 마지막 raw image를 불러온다 & 명령행 인자 선언
+  var raw_image = getMostRecentFileName('/home/ubuntu/CNN/motion');
+  var arg_darknet = "./darknet detector test cfg/voc.data cfg/tiny-yolo-voc.cfg tiny-yolo-voc.weights " + raw_image;
+  var arg_mv = "mv " + darknet_home + "/predictions.png /home/ubuntu/CNN/dt_image/" + Date.now() + ".png";
+
+
+//  while (1) {
+      async.series([
+          // 2) 다크넷에 파일 인자를 넣어 실행.
+          function(callback) {
+              child = exec(arg_darknet, {
+                  cwd: darknet_home
+              }, function(error, stdout, stderr) {
+                  if (error !== null) {
+                      console.log('exec error: ' + error);
+                      allback('darknet err');
+                  }
+                  console.log('stdout: ' + stdout);
+                  console.log('stderr: ' + stderr);
+                  callback(null, '200 darknet');
+
+              });
+            //  console.log('darknet!');
+            //  callback(null, '200 darknet');
+          },
+          // 3) output은 해당 경로로 이동시켜 준다.
+          function(callback) {
+
+              console.log(arg_mv);
+              child = exec(arg_mv, {
+                  cwd: darknet_home
+              }, function(error, stdout, stderr) {
+                  //child = exec(arg_test, function(error, stdout, stderr) {
+                  if (error !== null) {
+                      console.log('exec error: ' + error);
+                      callback('mv err');
+                  }
+                  console.log('stdout: ' + stdout);
+                  console.log('stderr: ' + stderr);
+                  callback(null, 'successed');
+              });
+              //console.log('mv!');
+              //callback(null, '200 darknet');
+          }
+      ], function(err, result) {
+          if (err)
+              console.log(err);
+          //else
+          //res.send("successed");
+      });
+      sleep.sleep(5);
+      callback();
+  //    setTimeout();
+//    }
+
+}
+
+
 
 function getMostRecentFileName(dir) {
     var files = fs.readdirSync(dir);
@@ -81,7 +95,44 @@ function getMostRecentFileName(dir) {
     }));
 }
 
+function asyncLoop(iterations, func, callback) {
+    var index = 0;
+    var done = false;
+    var loop = {
+        next: function() {
+            if (done) {
+                return;
+            }
 
+            if (index < iterations) {
+                index++;
+                func(loop);
+            }
+             else {
+              // found smth ..
+                done = true;
+                callback();
+            }
+        },
+
+        iteration: function() {
+            return index - 1;
+        },
+
+        break: function() {
+            done = true;
+            callback();
+        }
+    };
+    loop.next();
+    return loop;
+}
+
+
+
+
+
+//ㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡ
 
 /*
 var fs = require('fs'),
