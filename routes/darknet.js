@@ -70,9 +70,11 @@ function getMostRecentFileName(dir) {
 
     // use underscore for max
     // 가장 최근에 변경된 파일을 리턴해줌
+   console.log(dir);
+   console.log(files.length);
     return path.join(dir, _.max(files, function(f) {
         var fullpath = path.join(dir, f); // 경로+파일 이름
-
+	console.log(fullpath);
         // ctime = creation time is used
         // replace with mtime for modification time
         return fs.statSync(fullpath).ctime;
