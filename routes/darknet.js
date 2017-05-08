@@ -11,7 +11,7 @@ const darknet_home = "/home/ubuntu/CNN/Animo_darknet/Animo_Darknet/Animo_Darknet
 router.get('/', function(req, res) {
     res.send("received");
     asyncLoop(10, function(loop) {
-        execCNN(req, res, function(result) {
+        execCNN(function(result) {
             console.log(loop.iteration());
             loop.next();
         });
@@ -19,7 +19,7 @@ router.get('/', function(req, res) {
 });
 
 
-function execCNN(req, res, callback) {
+function execCNN(callback) {
     // 1) 맨 마지막 raw image를 불러온다 & 명령행 인자 선언
     var raw_image = getMostRecentFileName('/home/ubuntu/CNN/motion');
     var arg_darknet = "./darknet detector test cfg/voc.data cfg/tiny-yolo-voc.cfg tiny-yolo-voc.weights " + raw_image;
@@ -31,7 +31,7 @@ function execCNN(req, res, callback) {
             child = exec(arg_darknet, {
                 cwd: darknet_home
             }, function(error, stdout, stderr) {
-                if (error !== null) {
+                if (error) {
                     console.log('exec error: ' + error);
                     cb('darknet err');
                 }
@@ -43,13 +43,10 @@ function execCNN(req, res, callback) {
         },
         // 3) output은 해당 경로로 이동시켜 준다.
         function(cb) {
-
-            //console.log(arg_mv);
             child = exec(arg_mv, {
                 cwd: darknet_home
             }, function(error, stdout, stderr) {
-
-                if (error !== null) {
+                if (error) {
                     console.log('exec error: ' + error);
                     cb('mv err');
                 }
@@ -63,11 +60,10 @@ function execCNN(req, res, callback) {
             console.log(err);
         else
             console.log("good");
+        setTimeout(callback, 3000);
     });
-    setTimeout(callback, 3000);
+
 }
-
-
 
 function getMostRecentFileName(dir) {
     var files = fs.readdirSync(dir);
