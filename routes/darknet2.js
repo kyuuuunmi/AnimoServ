@@ -12,7 +12,7 @@ router.get('/', function(req, res) {
     res.send("received");
     var count = 0;
     async.whilst(function (){ return count < 5; },
-        execCNN(req,res,count,callback),
+        execCNN(callback,count),
         function (err) {
           if(err)
           console.log("[whilst err]");
@@ -21,7 +21,7 @@ router.get('/', function(req, res) {
     );
 });
 
-function execCNN(req, res, count,callback) {
+function execCNN(callback,count) {
     count++;
     // 1) 맨 마지막 raw image를 불러온다 & 명령행 인자 선언
     var raw_image = getMostRecentFileName('/home/ubuntu/CNN/motion');
