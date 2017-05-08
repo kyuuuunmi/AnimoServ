@@ -30,30 +30,31 @@ function execCNN(req, res, callback){
       async.series([
           // 2) 다크넷에 파일 인자를 넣어 실행.
           function(callback) {
+	     console.log("series1")
               child = exec(arg_darknet, {
                   cwd: darknet_home
               }, function(error, stdout, stderr) {
-                  if (error !== null) {
+                  if (error) {
                       console.log('exec error: ' + error);
-                      allback('darknet err');
+                      callback('darknet err');
                   }
                   console.log('stdout: ' + stdout);
                   console.log('stderr: ' + stderr);
                   callback(null, '200 darknet');
 
               });
-            //  console.log('darknet!');
+             console.log('darknet!');
             //  callback(null, '200 darknet');
           },
           // 3) output은 해당 경로로 이동시켜 준다.
           function(callback) {
 
-              console.log(arg_mv);
+              console.log("series2"+arg_mv);
               child = exec(arg_mv, {
                   cwd: darknet_home
               }, function(error, stdout, stderr) {
                   //child = exec(arg_test, function(error, stdout, stderr) {
-                  if (error !== null) {
+                  if (error) {
                       console.log('exec error: ' + error);
                       callback('mv err');
                   }
@@ -84,11 +85,11 @@ function getMostRecentFileName(dir) {
 
     // use underscore for max
     // 가장 최근에 변경된 파일을 리턴해줌
-   console.log(dir);
-   console.log(files.length);
+   // console.log(dir);
+   console.log("getMostRecentFileName:files.length="+files.length);
     return path.join(dir, _.max(files, function(f) {
         var fullpath = path.join(dir, f); // 경로+파일 이름
-	console.log(fullpath);
+	// console.log(fullpath);
         // ctime = creation time is used
         // replace with mtime for modification time
         return fs.statSync(fullpath).ctime;
