@@ -10,12 +10,12 @@ const darknet_home = "/home/ubuntu/CNN/Animo_darknet/Animo_Darknet/Animo_Darknet
 
 router.get('/', function(req, res) {
     res.send("received");
-    asyncLoop(10, function(loop) {
+    asyncLoop(5, function(loop) {
         execCNN(function(result) {
             console.log(loop.iteration());
             loop.next();
         });
-    });
+    }, function( ){console.log('cycle ended')} );
 });
 
 
@@ -24,7 +24,7 @@ function execCNN(callback) {
     var raw_image = getMostRecentFileName('/home/ubuntu/CNN/motion');
     var arg_darknet = "./darknet detector test cfg/voc.data cfg/tiny-yolo-voc.cfg tiny-yolo-voc.weights " + raw_image;
     var arg_mv = "mv " + darknet_home + "/predictions.png /home/ubuntu/CNN/dt_image/" + Date.now() + ".png";
-
+    console.log('[darknet]'+arg_darknet);
     async.series([
         // 2) 다크넷에 파일 인자를 넣어 실행.
         function(cb) {
@@ -61,7 +61,7 @@ function execCNN(callback) {
             console.log(err);
         else
             console.log("good");
-        setTimeout(callback, 3000);
+        setTimeout(callback, 1000);
     });
 
 }
