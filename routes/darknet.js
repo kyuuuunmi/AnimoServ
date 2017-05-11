@@ -55,6 +55,7 @@ function execCNN(callback) {
                 cb(null, 'successed');
             });
         }
+        // TODO : labeling 추출
     ], function(err, result) {
         if (err)
             console.log(err);
