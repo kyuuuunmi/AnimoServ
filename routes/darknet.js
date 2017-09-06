@@ -21,7 +21,7 @@ router.get('/test', function(req, res) {
 
 router.get('/find', function(req, res) {
     target = req.query.target;
-    console.log(target);
+    console.log("target is : " + target);
     res.status(200).send(target);
 
 });
@@ -45,12 +45,6 @@ router.get('/', function(req, res) {
         }
         res.status(200).send(result+" " + target);
     });
-    /*    asyncLoop(5, function(loop) {
-            execCNN(function(result) {
-                console.log(loop.iteration());
-                loop.next();
-            });
-        }, function( ){console.log('cycle ended');} );*/
 });
 
 function execCNN(callback) {
@@ -72,8 +66,7 @@ function execCNN(callback) {
                     console.log('exec error: ' + error);
                     cb('darknet err');
                 }
-                console.log('stdout: ' + stdout);
-                console.log('stderr: ' + stderr);
+                console.log('darknet stdout: ' + stdout);
                 cb(null, '200 darknet');
             });
 
@@ -87,8 +80,7 @@ function execCNN(callback) {
                     console.log('exec error: ' + error);
                     cb('mv err');
                 }
-                console.log('stdout: ' + stdout);
-                console.log('stderr: ' + stderr);
+                console.log('mv stdout: ' + stdout);
                 cb(null, '200 mv ');
             });
         },
@@ -121,9 +113,7 @@ function execCNN(callback) {
             console.log(err);
             callback(err, "-1");
         } else {
-            console.log("good");
             callback(null, result[2]);
-
         }
     });
 
@@ -143,61 +133,5 @@ function getMostRecentFileName(dir) {
     }));
 }
 
-function asyncLoop(iterations, func, callback) {
-    var index = 0;
-    var done = false;
-    var loop = {
-        next: function() {
-            if (done) {
-                return;
-            }
-
-            if (index < iterations) {
-                index++;
-                func(loop);
-            } else {
-                // found smth ..
-                done = true;
-                callback();
-            }
-        },
-
-        iteration: function() {
-            return index - 1;
-        },
-
-        break: function() {
-            done = true;
-            callback();
-        }
-    };
-    loop.next();
-    return loop;
-}
-
-
-
-
-
-//ㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡ
-
-/*
-var fs = require('fs'),
-    path = require('path'),
-    _ = require('underscore');
-
-// Return only base file name without dir
-function getMostRecentFileName(dir) {
-    var files = fs.readdirSync(dir);
-
-    // use underscore for max()
-    return _.max(files, function (f) {
-        var fullpath = path.join(dir, f);
-
-        // ctime = creation time is used
-        // replace with mtime for modification time
-        return fs.statSync(fullpath).ctime;
-    });
-}
-*/
+f
 module.exports = router;
