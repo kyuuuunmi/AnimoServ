@@ -20,8 +20,9 @@ router.get('/test', function(req, res) {
 });
 
 router.get('/find', function(req, res) {
-    target = req.params.target;
-    res.status(200).send("1");
+    target = req.query.target;
+    console.log(target);
+    res.status(200).send(target);
 
 });
 
@@ -42,7 +43,7 @@ router.get('/', function(req, res) {
             console.log("fin execCNN");
 
         }
-        res.status(200).send(result);
+        res.status(200).send(result+" " + target);
     });
     /*    asyncLoop(5, function(loop) {
             execCNN(function(result) {
@@ -93,7 +94,7 @@ function execCNN(callback) {
         },
         function(cb) {
             // labelList Load
-            var labelList = fs.readFileSync(label_path, 'utf8').toSring().split("\n");
+            var labelList = fs.readFileSync(label_path).toString().split("\n");
 
             //  labelList
             for (var i = 0; i < labelList.length; i++) {
