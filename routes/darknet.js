@@ -8,23 +8,59 @@ const sleep = require('sleep');
 const exec = require('child_process').exec;
 const darknet_home = "/home/ubuntu/CNN/Animo_darknet/Animo_Darknet/Animo_Darknet";
 
-router.get('/', function(req, res) {
-    res.send("received");
-    asyncLoop(5, function(loop) {
-        execCNN(function(result) {
-            console.log(loop.iteration());
-            loop.next();
-        });
-    }, function( ){console.log('cycle ended')} );
+var target;
+
+router.get('/test', function(req, res) {
+    /*  var data ={
+        code : 1,
+        content : "content of response"
+      };
+    */
+    res.send("1");
 });
 
+router.get('/find', function(req, res) {
+    target = req.params.target;
+    res.status(200).send("1");
+
+});
+
+router.get('/', function(req, res) {
+    //res.send("received");
+    execCNN(function(err, result) {
+        /*
+        response result code
+        1 : found you want
+        0 : found smth but not you want
+        -1 : error
+        */
+        if (err) {
+            console.error("err");
+            res.status(500).send();
+
+        } else {
+            console.log("fin execCNN");
+
+        }
+        res.status(200).send(result);
+    });
+    /*    asyncLoop(5, function(loop) {
+            execCNN(function(result) {
+                console.log(loop.iteration());
+                loop.next();
+            });
+        }, function( ){console.log('cycle ended');} );*/
+});
 
 function execCNN(callback) {
     // 1) 맨 마지막 raw image를 불러온다 & 명령행 인자 선언
     var raw_image = getMostRecentFileName('/home/ubuntu/CNN/motion');
     var arg_darknet = "./darknet detector test cfg/voc.data cfg/tiny-yolo-voc.cfg tiny-yolo-voc.weights " + raw_image;
     var arg_mv = "mv " + darknet_home + "/predictions.png /home/ubuntu/CNN/dt_image/" + Date.now() + ".png";
-    console.log('[darknet]'+arg_darknet);
+    var label_path = "/home/ubuntu/CNN/label_data/labelsave.txt";
+
+    console.log('[darknet]' + arg_darknet);
+
     async.series([
         // 2) 다크넷에 파일 인자를 넣어 실행.
         function(cb) {
@@ -52,16 +88,42 @@ function execCNN(callback) {
                 }
                 console.log('stdout: ' + stdout);
                 console.log('stderr: ' + stderr);
-                cb(null, 'successed');
+                cb(null, '200 mv ');
             });
+        },
+        function(cb) {
+            // labelList Load
+            var labelList = fs.readFileSync(label_path, 'utf8').toSring().split("\n");
+
+            //  labelList
+            for (var i = 0; i < labelList.length; i++) {
+                console.log('label : ' + labelList[i]);
+                if (labelList[i] == target) {
+                    cb(null, '1');
+                }
+            }
+            cb(null, '0');
+        },
+        function(cb) {
+            // labelList reset
+            var labelList = fs.writeFileSync(label_path, '', {
+                flag: 'w'
+            }, function(error) {
+                if (error)
+                    console.log(error);
+                    cb('file write error');
+            });
+            cb(null, '0');
         }
-        // TODO : labeling 추출
     ], function(err, result) {
-        if (err)
+        if (err) {
             console.log(err);
-        else
+            callback(err, "-1");
+        } else {
             console.log("good");
-        setTimeout(callback, 1000);
+            callback(null, result[2]);
+
+        }
     });
 
 }
