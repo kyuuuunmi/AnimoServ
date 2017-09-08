@@ -32,22 +32,24 @@ router.get('/', function(req, res) {
         /*
         response result code
         0 : found you want
-        1 : found smth but not you want
+        1 : found smth but not you want(default)
         -1 : error
         */
-	var data = { code : 0 }
+        var data = {
+            code: 1
+        };
 
         if (err) {
             console.error("err");
-	    data.code = -1;
+            data.code = -1;
             res.status(500).send();
 
         } else {
             console.log("fin execCNN");
         }
-	data.code = result; 
-	res.status(200).send(data);
-//        res.status(200).send(result+" " + target);
+        data.code = result;
+        res.status(200).send(data);
+        //        res.status(200).send(result+" " + target);
     });
 });
 
@@ -106,9 +108,10 @@ function execCNN(callback) {
             var labelList = fs.writeFileSync(label_path, '', {
                 flag: 'w'
             }, function(error) {
-                if (error)
+                if (error) {
                     console.log(error);
                     cb('file write error');
+                }
             });
             cb(null, '0');
         }
@@ -137,5 +140,5 @@ function getMostRecentFileName(dir) {
     }));
 }
 
-f
+
 module.exports = router;
