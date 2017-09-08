@@ -31,19 +31,23 @@ router.get('/', function(req, res) {
     execCNN(function(err, result) {
         /*
         response result code
-        1 : found you want
-        0 : found smth but not you want
+        0 : found you want
+        1 : found smth but not you want
         -1 : error
         */
+	var data = { code : 0 }
+
         if (err) {
             console.error("err");
+	    data.code = -1;
             res.status(500).send();
 
         } else {
             console.log("fin execCNN");
-
         }
-        res.status(200).send(result+" " + target);
+	data.code = result; 
+	res.status(200).send(data);
+//        res.status(200).send(result+" " + target);
     });
     /*    asyncLoop(5, function(loop) {
             execCNN(function(result) {
@@ -100,10 +104,10 @@ function execCNN(callback) {
             for (var i = 0; i < labelList.length; i++) {
                 console.log('label : ' + labelList[i]);
                 if (labelList[i] == target) {
-                    cb(null, '1');
+                    cb(null, 0);
                 }
             }
-            cb(null, '0');
+            cb(null, 1);
         },
         function(cb) {
             // labelList reset
