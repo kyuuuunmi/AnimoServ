@@ -91,7 +91,12 @@ function execCNN(callback) {
             });
         },
         function(cb) {
-            var flag = 1;
+
+          /*
+          var -> let 선언
+
+          */
+            //var flag = 1;
             // labelList Load
             var labelList = fs.readFileSync(label_path).toString().split("\n");
 
@@ -100,11 +105,14 @@ function execCNN(callback) {
                 console.log('label : ' + labelList[i]);
                 if (labelList[i] == target) {
                     cb(null, 0);
-                    flag = 0
+                    break;
+                    //flag = 0
                 }
+                if(i == labelList.length-1 )
+                  cb(null, 1);
             }
-            if(flag)
-                cb(null, 1);
+            //if(flag)
+            //    cb(null, 1);
         },
         function(cb) {
             // labelList reset
