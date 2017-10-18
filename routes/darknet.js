@@ -21,7 +21,8 @@ router.get('/test', function(req, res) {
 
 router.get('/find', function(req, res) {
     target = req.query.target;
-    console.log("target is : " + target);
+    var time = Date.now();
+    console.log("[ " + time + " ] target '" + target + "' requested'");
     res.status(200).send(target);
 
 });
@@ -60,7 +61,7 @@ function execCNN(callback) {
     var arg_mv = "mv " + darknet_home + "/predictions.png /home/ubuntu/CNN/dt_image/" + Date.now() + ".png";
     var label_path = "/home/ubuntu/CNN/label_data/labelsave.txt";
 
-    console.log('[darknet]' + arg_darknet);
+    console.log('[darknet] detect ' + raw_image);
 
     async.series([
         // 2) 다크넷에 파일 인자를 넣어 실행.
@@ -72,7 +73,7 @@ function execCNN(callback) {
                     console.log('exec error: ' + error);
                     cb('darknet err');
                 }
-                console.log('darknet stdout: ' + stdout);
+                console.log('[darknet stdout] : ' + stdout);
                 cb(null, '200 darknet');
             });
 
@@ -86,7 +87,7 @@ function execCNN(callback) {
                     console.log('exec error: ' + error);
                     cb('mv err');
                 }
-                console.log('mv stdout: ' + stdout);
+                console.log('[mv stdout]: ' + stdout);
                 cb(null, '200 mv ');
             });
         },
@@ -102,7 +103,7 @@ function execCNN(callback) {
 
             //  labelList
             for (var i = 0; i < labelList.length; i++) {
-                console.log('label : ' + labelList[i]);
+            //    console.log('label : ' + labelList[i]);
                 if (labelList[i] == target) {
                     cb(null, 0);
                     break;
