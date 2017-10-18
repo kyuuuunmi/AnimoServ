@@ -21,7 +21,7 @@ router.get('/test', function(req, res) {
 
 router.get('/find', function(req, res) {
     target = req.query.target;
-    var time = Date.now();
+    var time = new Date().getTime();
     console.log("[ " + time + " ] target '" + target + "' requested'");
     res.status(200).send(target);
 
@@ -46,7 +46,7 @@ router.get('/', function(req, res) {
             res.status(500).send();
 
         } else {
-            console.log("fin execCNN");
+            console.log("[detection fin]");
         }
         data.code = result;
         res.status(200).send(data);
